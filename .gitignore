@@ -13,3 +13,4 @@ artifacts/
 results/localnet-*
 results
 .env
+dist

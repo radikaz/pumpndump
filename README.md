@@ -8,7 +8,7 @@ This is early work: a spike to prove the risky parts. It is not audited. Do not 
 
 | Program | What it is | Devnet |
 |---|---|---|
-| `pnd_spike` | The real design. Orders are sealed with [Arcium](https://docs.arcium.com) MPC. A round closes at a random moment drawn inside Arcium. Buys and sells of one pair match inside the circuit. | `8ZoAUA3iVcLxGHstnHz295DmfAtGE9PVZeHFueHP6NFR` (deployed, waiting for a working Arcium devnet cluster) |
+| `pnd_spike` | The real design. Orders are sealed with [Arcium](https://docs.arcium.com) MPC. A round closes at a random moment drawn inside Arcium. Buys and sells of one pair match inside the circuit. | Not deployed. No Arcium devnet cluster could run its key setup on 2026-11-09. |
 | `pnd_mock` | A demo of the same flow with Arcium replaced by one executor key. **Orders are not private in this program.** The executor can read every order. | `24GtYmstfSQN6xkpJREt3YQpQHeePr7xDRSMy2uo9mw8` |
 
 Both programs share one account layout (`programs/pnd_spike/src/state.rs`), so a client reads the same accounts in both modes.
@@ -44,3 +44,12 @@ ANCHOR_PROVIDER_URL=<rpc> ANCHOR_WALLET=<user> yarn mock:smoke    # one order, e
 ```
 
 The executor keeps its keys in `~/.config/solana/`, outside the repo. It refuses to run on mainnet.
+
+To run the executor on a server, build one file and run it with Node 22:
+
+```
+yarn mock:bundle   # writes dist/executor.js
+RPC_URL=<rpc> EXECUTOR_KEYPAIR=<path> EXECUTOR_X25519=<path> node dist/executor.js
+```
+
+It stops if a key file is missing. It never makes new keys, because users encrypt orders to the x25519 key in the on-chain config.
