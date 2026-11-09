@@ -69,6 +69,9 @@ async function main() {
   const ledger = new Ledger(load(), () => prices, undefined, undefined, PAY_LOCKERS);
   const s = ledger.s;
   const dirty = new Set<string>();
+  /** Credited since the last close. Written with the round's batch, not right after the
+   *  deposit, so the write's timing does not tie the deposit wallet to the balance account. */
+  const credited = new Set<string>();
   s.pendingPosts ??= [];
   if (s.round.openTs === 0) {
     ledger.openRound(cfg.nextRound.toNumber(), MIN_CLOSE_S, SPAN_CLOSE_S);
@@ -102,8 +105,8 @@ async function main() {
         try {
           const note = openNote(x25519Secret, Uint8Array.from(d.account.note));
           const pub = b58.encode(note.sign);
-          ledger.credit(pub, Buffer.from(note.box).toString("hex"), coin.t, BigInt(d.account.amount.toString()), d.publicKey.toBase58());
-          dirty.add(pub);
+          ledger.credit(pub, Buffer.from(note.box).toString("hex"), coin.t, BigInt(d.account.amount.toString()));
+          credited.add(pub);
           log(`deposit ${id}: ${coin.t} credited`);
         } catch {
           log(`deposit ${id}: note does not open; closing it with no credit`);
@@ -121,6 +124,8 @@ async function main() {
       // Close and open the next round in one save, then post. A failed post is retried.
       const { result, touched } = ledger.closeRound();
       touched.forEach((p) => dirty.add(p));
+      credited.forEach((p) => dirty.add(p));
+      credited.clear();
       s.pendingPosts!.push(result);
       ledger.openRound(result.id + 1, MIN_CLOSE_S, SPAN_CLOSE_S);
       save(s);

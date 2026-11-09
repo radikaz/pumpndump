@@ -8,7 +8,7 @@ import { PndDemo } from "../../target/types/pnd_demo";
 const RPC = { commitment: "confirmed", preflightCommitment: "confirmed" } as const;
 const MAINNET_GENESIS = "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d";
 const TOKEN_PROGRAM = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
-const ATA_PROGRAM = new PublicKey("ATokenGPvbdGVxr1b6hvZbsiqW5xWH4BtJ7aA8RMKw2c");
+const ATA_PROGRAM = new PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL");
 /** Bytes of a balance document per transaction. */
 const CHUNK = 800;
 
