@@ -6,7 +6,9 @@
     "mock:setup": "ts-mocha -p ./tsconfig.json -t 1000000 --exit executor/setup.ts",
     "mock:run": "ts-mocha -p ./tsconfig.json -t 0 executor/run.ts",
     "mock:smoke": "ts-mocha -p ./tsconfig.json -t 0 --exit executor/smoke.ts",
-    "mock:bundle": "esbuild executor/main.ts --bundle --platform=node --target=node22 --outfile=dist/executor.js"
+    "mock:bundle": "esbuild executor/main.ts --bundle --platform=node --target=node22 --outfile=dist/executor.js",
+    "demo:bundle": "esbuild executor/v2/service.ts --bundle --platform=node --target=node22 --outfile=dist/executor-v2.js && esbuild executor/v2/setup.ts --bundle --platform=node --target=node22 --outfile=dist/setup-v2.js",
+    "demo:test": "ts-mocha -p ./tsconfig.json --exit tests/demo_ledger.ts"
   },
   "dependencies": {
     "@anchor-lang/core": "^1.0.2",

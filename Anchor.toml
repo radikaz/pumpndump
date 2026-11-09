@@ -8,6 +8,7 @@ skip-lint = false
 [programs.devnet]
 pnd_spike = "8ZoAUA3iVcLxGHstnHz295DmfAtGE9PVZeHFueHP6NFR"
 pnd_mock = "24GtYmstfSQN6xkpJREt3YQpQHeePr7xDRSMy2uo9mw8"
+pnd_demo = "3qjjCvCh4txLgvuCsxKoHKvG9Lbv1Ax6CSvotX9ZYc1d"
 
 [programs.localnet]
 # Only the MXE program here: with a second program, `arcium test` does not set up pnd_spike's MXE.

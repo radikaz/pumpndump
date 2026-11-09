@@ -1,0 +1,262 @@
+[
+{
+"t": "USDC",
+"id": "usd-coin",
+"usd": 0.999538
+},
+{
+"t": "SOL",
+"id": "solana",
+"usd": 85.92
+},
+{
+"t": "XMR",
+"id": "monero",
+"usd": 594.82
+},
+{
+"t": "PUMP",
+"id": "pump-fun",
+"usd": 0.00353982
+},
+{
+"t": "JUP",
+"id": "jupiter-exchange-solana",
+"usd": 0.230812
+},
+{
+"t": "RAY",
+"id": "raydium",
+"usd": 1.66
+},
+{
+"t": "BONK",
+"id": "bonk",
+"usd": 2.67e-06
+},
+{
+"t": "MET",
+"id": "meteora",
+"usd": 0.300401
+},
+{
+"t": "STONK",
+"id": "stonk-3",
+"usd": 0.0451552
+},
+{
+"t": "PENGU",
+"id": "pudgy-penguins",
+"usd": 0.00610263
+},
+{
+"t": "TRUMP",
+"id": "official-trump",
+"usd": 1.14
+},
+{
+"t": "WIF",
+"id": "dogwifcoin",
+"usd": 0.154418
+},
+{
+"t": "USELESS",
+"id": "useless-3",
+"usd": 0.121003
+},
+{
+"t": "FARTCOIN",
+"id": "fartcoin",
+"usd": 0.11154
+},
+{
+"t": "MELANIA",
+"id": "melania-meme",
+"usd": 0.055835
+},
+{
+"t": "BAN",
+"id": "comedian",
+"usd": 0.04312259
+},
+{
+"t": "DESSA",
+"id": "dessa",
+"usd": 0.04293557
+},
+{
+"t": "BOME",
+"id": "book-of-meme",
+"usd": 0.00059366
+},
+{
+"t": "POPCAT",
+"id": "popcat",
+"usd": 0.03369171
+},
+{
+"t": "PNUT",
+"id": "peanut-the-squirrel",
+"usd": 0.03250661
+},
+{
+"t": "MEW",
+"id": "cat-in-a-dogs-world",
+"usd": 0.00034113
+},
+{
+"t": "MOODENG",
+"id": "moo-deng",
+"usd": 0.0303897
+},
+{
+"t": "TROLL",
+"id": "troll-2",
+"usd": 0.02614779
+},
+{
+"t": "BIRB",
+"id": "moonbirds",
+"usd": 0.088367
+},
+{
+"t": "NEET",
+"id": "neet",
+"usd": 0.02411077
+},
+{
+"t": "ANSEM",
+"id": "the-black-bull",
+"usd": 0.056448
+},
+{
+"t": "ZEREBRO",
+"id": "zerebro",
+"usd": 0.02277092
+},
+{
+"t": "XCAT",
+"id": "pumpstop",
+"usd": 18.38
+},
+{
+"t": "FARTBOY",
+"id": "fartboy",
+"usd": 0.01683686
+},
+{
+"t": "GIGA",
+"id": "gigachad-2",
+"usd": 0.00172547
+},
+{
+"t": "THEROS",
+"id": "theros",
+"usd": 0.189092
+},
+{
+"t": "CWIF",
+"id": "catwifhat-2",
+"usd": 1.5217e-08
+},
+{
+"t": "HAROLD",
+"id": "haroldonsol",
+"usd": 0.01373728
+},
+{
+"t": "TDCCP",
+"id": "tdccp",
+"usd": 0.02086704
+},
+{
+"t": "PIPPIN",
+"id": "pippin",
+"usd": 0.01248029
+},
+{
+"t": "GOAT",
+"id": "goatseus-maximus",
+"usd": 0.01236363
+},
+{
+"t": "WOULD",
+"id": "would",
+"usd": 0.01104026
+},
+{
+"t": "PEPECOIN",
+"id": "pepecoin-2",
+"usd": 0.105243
+},
+{
+"t": "GOLD",
+"id": "stairway-to-gold",
+"usd": 0.01032678
+},
+{
+"t": "BINK",
+"id": "big-dog-fink",
+"usd": 6.837e-05
+},
+{
+"t": "ZCAT",
+"id": "anonymous-cat",
+"usd": 0.01019419
+},
+{
+"t": "BERT",
+"id": "bertram-the-pomeranian",
+"usd": 0.00994462
+},
+{
+"t": "PONKE",
+"id": "ponke",
+"usd": 0.01686239
+},
+{
+"t": "ACT",
+"id": "act-i-the-ai-prophecy",
+"usd": 0.00963191
+},
+{
+"t": "SLERF",
+"id": "slerf",
+"usd": 0.01679535
+},
+{
+"t": "CHILLGUY",
+"id": "chill-guy",
+"usd": 0.00774442
+},
+{
+"t": "JELLYJELLY",
+"id": "jelly-my-jelly",
+"usd": 0.03921982
+},
+{
+"t": "ARC",
+"id": "ai-rig-complex",
+"usd": 0.03268533
+},
+{
+"t": "ALCH",
+"id": "alchemist-ai",
+"usd": 0.03163565
+},
+{
+"t": "PUMPCADE",
+"id": "pumpcade",
+"usd": 0.01891498
+},
+{
+"t": "VERSE",
+"id": "verse-world",
+"usd": 0.01658881
+},
+{
+"t": "MARSMI",
+"id": "marsmi",
+"usd": 0.01158009
+}
+]
