@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Ledger, newState, UserError } from "../executor/v2/ledger";
+import { Ledger, MAX_WAITS, newState, UserError } from "../executor/v2/ledger";
 
 const M = 1_000_000n;
 const prices = { USDC: 1, SOL: 100, BONK: 0.00002, JUP: 0.5 };
@@ -73,5 +73,25 @@ describe("devnet v2 ledger", () => {
     const paid = l.withdraw("a", "SOL", 1n * M, "USDC");
     expect(paid.coin).to.equal("USDC");
     expect(paid.amount).to.equal(100n * M - (100n * M * 6n) / 1000n);
+  });
+
+  it("waits below min out, fills when the price is back, and returns after too many waits", () => {
+    const px = { ...prices };
+    const l = new Ledger(newState(), () => px);
+    l.openRound(0, 60, 0);
+    l.credit("a", "", "SOL", 2n * M);
+    const o = l.order("a", "SOL", "USDC", 1n * M, 1, 0, 100);
+    px.SOL = 98.5; // 1.5% worse than the quote: below 1% min out
+    l.closeRound();
+    expect([o.wait, o.status, o.remaining]).to.deep.equal([true, "open", (1n * M).toString()]);
+    px.SOL = 99.5; // 0.5% worse: inside min out
+    l.closeRound();
+    expect([o.wait, o.status]).to.deep.equal([false, "done"]);
+    const o2 = l.order("a", "SOL", "USDC", 1n * M, 1, 0, 500);
+    px.SOL = 50;
+    for (let i = 0; i < MAX_WAITS; i++) l.closeRound();
+    expect(o2.status).to.equal("returned");
+    expect(l.s.users.a.bal.SOL).to.equal((1n * M).toString());
+    expect(() => l.order("a", "SOL", "USDC", 1n * M, 1, 0, 50)).to.throw(UserError);
   });
 });

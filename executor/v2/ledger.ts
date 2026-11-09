@@ -15,6 +15,10 @@ export const DRAW_EVERY_MS = 7 * 24 * 3600_000;
 const MAX_ORDERS_IN_DOC = 6;
 const MAX_HISTORY = 10;
 const MAX_LOCKS = 8;
+/** Min out choices in basis points (1, 2, 3, 5%). */
+export const MIN_OUT_BPS = [100, 200, 300, 500];
+/** After this many rounds in a row below min out, the rest of the order goes back to the balance. */
+export const MAX_WAITS = 12;
 
 export interface Order {
   id: string;
@@ -29,7 +33,14 @@ export interface Order {
   fees: string;
   via: { pairs: string; rings: string; earn: string; market: string };
   earnDays: number;
-  status: "open" | "done" | "cancelled";
+  /** Worst price accepted, in basis points under the quote at seal time. */
+  minOutBps: number;
+  /** Out per in at seal time, times 1e12. */
+  quoteE12: string;
+  /** True when the last round's price was below min out, so the part waited. */
+  wait: boolean;
+  waits: number;
+  status: "open" | "done" | "cancelled" | "returned";
   ts: number;
 }
 export interface Lock { id: string; coin: string; amount: string; days: number; until: number; earned: string }
@@ -82,8 +93,9 @@ const add = (m: Record<string, string>, k: string, d: bigint) => {
 /** Base units (6 decimals) to USD. */
 const usd = (amount: bigint, price: number) => (Number(amount) / 1e6) * price;
 /** Converts base units of one coin to another at reference prices. */
+const rateE12 = (pFrom: number, pTo: number) => BigInt(Math.round((pFrom / pTo) * 1e12));
 const convert = (amount: bigint, pFrom: number, pTo: number) =>
-  (amount * BigInt(Math.round((pFrom / pTo) * 1e12))) / 1_000_000_000_000n;
+  (amount * rateE12(pFrom, pTo)) / 1_000_000_000_000n;
 
 export class Ledger {
   constructor(
@@ -125,18 +137,18 @@ export class Ledger {
     add(u.bal, coin, -amount);
   }
 
-  order(pub: string, from: string, to: string, amount: bigint, parts: Parts, earnDays: number): Order {
+  order(pub: string, from: string, to: string, amount: bigint, parts: Parts, earnDays: number, minOutBps = 200): Order {
     const u = this.user(pub);
     if (from === to) throw new UserError("Pick two different coins");
     if (![1, 3, 6, 12, "drip"].includes(parts)) throw new UserError("Parts must be 1, 3, 6, 12 or drip");
     if (![0, ...LOCK_DAYS].includes(earnDays)) throw new UserError("Earn lock must be 0, 1, 7 or 30 days");
-    this.price(from);
-    this.price(to);
+    if (!MIN_OUT_BPS.includes(minOutBps)) throw new UserError("Min out must be 1, 2, 3 or 5%");
+    const quoteE12 = rateE12(this.price(from), this.price(to));
     this.take(u, from, amount);
     const o: Order = {
       id: `o${this.s.nextId++}`, from, to, amount: amount.toString(), remaining: amount.toString(), parts,
       partsDone: 0, filled: "0", got: "0", fees: "0", via: { pairs: "0", rings: "0", earn: "0", market: "0" },
-      earnDays, status: "open", ts: this.now(),
+      earnDays, minOutBps, quoteE12: quoteE12.toString(), wait: false, waits: 0, status: "open", ts: this.now(),
     };
     u.orders.unshift(o);
     this.trimOrders(u);
@@ -215,6 +227,24 @@ export class Ledger {
     for (const [pub, u] of Object.entries(this.s.users)) {
       for (const o of u.orders) {
         if (o.status !== "open" || !(prices[o.from] > 0) || !(prices[o.to] > 0)) continue;
+        // Min out: a part waits while the round price is worse than the quote allows.
+        const floor = o.quoteE12 ? (B(o.quoteE12) * BigInt(10_000 - (o.minOutBps ?? 200))) / 10_000n : 0n;
+        if (rateE12(prices[o.from], prices[o.to]) < floor) {
+          o.waits ??= 0;
+          o.wait = true;
+          o.waits += 1;
+          if (o.waits >= MAX_WAITS) {
+            add(u.bal, o.from, B(o.remaining));
+            this.hist(u, { kind: "return", coin: o.from, amount: o.remaining, ts: now });
+            o.remaining = "0";
+            o.status = "returned";
+            o.wait = false;
+          }
+          touched.add(pub);
+          continue;
+        }
+        o.wait = false;
+        o.waits = 0;
         const amt = this.partSize(o, now);
         if (amt <= 0n) continue;
         parts.push({ pub, o, amt, v: usd(amt, prices[o.from]), f: [0, 0, 0, 0] });

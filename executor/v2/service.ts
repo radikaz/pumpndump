@@ -191,7 +191,7 @@ async function main() {
     "POST /v1/order": (b) => serial(async () => {
       const m = auth(b);
       const parts = (m.parts === "drip" ? "drip" : Number(m.parts)) as Parts;
-      const place = () => ledger.order(m.pub, coin(m.from).t, coin(m.to).t, amt(m.amount), parts, Number(m.earnDays ?? 0));
+      const place = () => ledger.order(m.pub, coin(m.from).t, coin(m.to).t, amt(m.amount), parts, Number(m.earnDays ?? 0), Number(m.minOutBps ?? 200));
       let o;
       try {
         o = place();
