@@ -191,7 +191,16 @@ async function main() {
     "POST /v1/order": (b) => serial(async () => {
       const m = auth(b);
       const parts = (m.parts === "drip" ? "drip" : Number(m.parts)) as Parts;
-      const o = ledger.order(m.pub, coin(m.from).t, coin(m.to).t, amt(m.amount), parts, Number(m.earnDays ?? 0));
+      const place = () => ledger.order(m.pub, coin(m.from).t, coin(m.to).t, amt(m.amount), parts, Number(m.earnDays ?? 0));
+      let o;
+      try {
+        o = place();
+      } catch (e) {
+        // A deposit confirmed a moment ago may not be credited yet. Look once, then try again.
+        if (!(e instanceof UserError) || !e.message.startsWith("Not enough")) throw e;
+        await creditDeposits();
+        o = place();
+      }
       dirty.add(m.pub);
       save(s);
       return { id: o.id, round: s.round.id };

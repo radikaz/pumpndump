@@ -9,7 +9,7 @@ This is early work: a spike to prove the risky parts. It is not audited. Do not 
 | Program | What it is | Devnet |
 |---|---|---|
 | `pnd_spike` | The real design. Orders are sealed with [Arcium](https://docs.arcium.com) MPC. A round closes at a random moment drawn inside Arcium. Buys and sells of one pair match inside the circuit. | Not deployed. No Arcium devnet cluster could run its key setup on 2026-11-09. |
-| `pnd_mock` | A demo of the round flow with Arcium replaced by one executor key. **Orders are not private in this program.** The executor can read every order. | `24GtYmstfSQN6xkpJREt3YQpQHeePr7xDRSMy2uo9mw8` (retired) |
+| `pnd_mock` | A demo of the round flow with Arcium replaced by one executor key. **Orders are not private in this program.** The executor can read every order. | Closed on 2026-11-10. Replaced by `pnd_demo`. |
 | `pnd_demo` | The full devnet demo: 52 test coins with a faucet, public deposits, balances encrypted to a key in the browser, payouts to any address, and public round results. One trusted executor runs the ledger, rounds and matching (pairs, rings, earn, market), split and drip, and earn locks. **Nothing is private from the executor.** | `3qjjCvCh4txLgvuCsxKoHKvG9Lbv1Ax6CSvotX9ZYc1d` |
 
 Both programs share one account layout (`programs/pnd_spike/src/state.rs`), so a client reads the same accounts in both modes.
