@@ -91,6 +91,8 @@ export class Ledger {
     private prices: () => Record<string, number>,
     private fees = { inside: 0.002, market: 0.006 },
     private now = () => Date.now(),
+    /** When false, fees stay with the house and lockers earn 0%. */
+    private payLockers = true,
   ) {}
 
   user(pub: string, box?: string): User {
@@ -329,7 +331,7 @@ export class Ledger {
   private payEarn(now: number): Set<string> {
     const touched = new Set<string>();
     const prices = this.prices();
-    const fees = this.s.feesUsd;
+    const fees = this.payLockers ? this.s.feesUsd : 0;
     this.s.feesUsd = 0;
     const pot = fees * (1 - DRAW_SHARE);
     this.s.drawPotUsd += fees * DRAW_SHARE;

@@ -258,5 +258,10 @@
 "t": "MARSMI",
 "id": "marsmi",
 "usd": 0.01158009
+},
+{
+"t": "MASK",
+"id": "catwifmask",
+"usd": 0.0009461
 }
 ]

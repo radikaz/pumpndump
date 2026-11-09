@@ -21,6 +21,8 @@ const SPAN_CLOSE_S = Number(process.env.SPAN_CLOSE_S ?? 540);
 const TICK_MS = 2000;
 const PRICE_EVERY_MS = 5 * 60_000;
 const KEEP_ROUNDS = 50;
+/** Lockers share the fees only when this is "1". Off by default: earn shows 0% APR for now. */
+const PAY_LOCKERS = process.env.PAY_LOCKERS === "1";
 const mask = (s: string) => s.replace(/api-key=[A-Za-z0-9_-]+/g, "api-key=***");
 const log = (m: string) => console.log(`${new Date().toISOString()} ${mask(m)}`);
 
@@ -64,7 +66,7 @@ async function main() {
   if (!cfg.executor.equals(signer.publicKey)) throw new Error("this key is not the pnd_demo executor");
   if (Buffer.compare(Buffer.from(cfg.executorX25519), Buffer.from(x25519Public)) !== 0) throw new Error("x25519 key does not match the config");
 
-  const ledger = new Ledger(load(), () => prices);
+  const ledger = new Ledger(load(), () => prices, undefined, undefined, PAY_LOCKERS);
   const s = ledger.s;
   const dirty = new Set<string>();
   s.pendingPosts ??= [];
@@ -238,7 +240,7 @@ async function main() {
       },
       coins: COINS.map((c) => ({ index: c.index, t: c.t, mint: chain.mint(c.index).toBase58(), usd: prices[c.t] })),
       pricesTs,
-      earn: ledger.earnStats(),
+      earn: { ...ledger.earnStats(), aprPct: PAY_LOCKERS ? null : 0 },
     }),
     "GET /v1/rounds": async () => s.rounds.map((r) => ({ ...r, net: r.net.map((n) => ({ coin: n.coin, amount: n.amount.toString() })) })),
   };
